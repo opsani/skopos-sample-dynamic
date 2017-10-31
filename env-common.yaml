@@ -31,11 +31,11 @@ quality_gates:
 # Define default values for variable, these can be overwritten in other env
 # files
 vars:
-  vote_ver: 1.0
-  worker_ver: 1.0
-  redis_ver: 3.2.2
-  db_ver: 9.4
-  result_ver: 1.0
+  vote_ver: "1.0"
+  worker_ver: "1.0"
+  redis_ver: "3.2.2"
+  db_ver: "9.4"
+  result_ver: "1.0"
 
   vote_count: 0
   worker_count: 0
