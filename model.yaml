@@ -1,0 +1,82 @@
+doctype: com.datagridsys.doctype/skopos/model
+version: 1
+components:
+  db:
+    image: postgres:${db_ver}
+    singleton: true
+    replicas: ${db_count}
+    visual:
+      x: 900
+      "y": 380
+  redis:
+    image: redis:${redis_ver}
+    replicas: ${redis_count}
+    visual:
+      x: 900
+      "y": 180
+    lifecycle: {}
+  result:
+    image: opsani/sample-result:${result_ver}
+    singleton: true
+    replicas: ${result_count}
+    provides:
+      ports: ["80"]
+    uses:
+      db: {}
+    lifecycle:
+    # Example quality gate probe: wait until the web server starts serving
+    # 200 OK status responses to request for "/socket.io/?transport=polling"
+    # set a timeout of 30 seconds
+    # See probe docs: https://github.com/opsani/probe-http
+      quality_probe:
+        steps:
+          - probe:
+              image: opsani/probe-http
+              action: get_ok
+              label: "wait until health check OK, retrying with timeout"
+              arguments:
+                port: 80 # default
+                path: "/socket.io/?transport=polling"
+                timeout: 30
+
+    visual:
+      x: 600
+      "y": 480
+  vote:
+    image: opsani/sample-vote:${vote_ver}
+    replicas: ${vote_count}
+    provides:
+      ports: ["80"]
+    uses:
+      redis: {}
+    visual:
+      x: 600
+      "y": 80
+  worker:
+    image: opsani/sample-worker:${worker_ver}
+    replicas: ${worker_count}
+    uses:
+      db: {}
+      redis: {}
+    visual:
+      x: 600
+      "y": 280
+gateways:
+  result-in:
+    type: host_port
+    exposes:
+    - port: "8881"
+      target_port: "80"
+    target: [result]
+    visual:
+      x: 20
+      "y": 480
+  vote-in:
+    type: host_port
+    exposes:
+    - port: "8880"
+      target_port: "80"
+    target: [vote]
+    visual:
+      x: 20
+      "y": 80

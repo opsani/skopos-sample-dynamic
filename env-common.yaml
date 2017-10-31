@@ -1,0 +1,44 @@
+core_plugin: docker-swarm
+service_discovery_plugin: docker-swarm
+service_discovery_auto: true
+load_balancer_plugin: docker-swarm
+load_balancer_auto: false
+
+
+# Example of quality gate defined for multiple components (i.e. anything that
+# matches the wildcards listed in the images: field)
+# See docs at http://doc.opsani.com/skopos/edge/VERIFY-GUIDE/#quality-gates-in-environment-descriptors
+quality_gates:
+    http_is_up: # example name of the quality gate
+        images: # run for services matching these images
+          - nginx  # exact match, will never match for our app
+          - opsani/sample-vote:* # wildcard version match
+          # - "my.registry.com/*" # match all images from my registry
+        steps:
+          - probe:
+              # Wait until the web server starts serving 200 status responses
+              # to requests for / (keep trying for 30 seconds)
+              # See probe docs: https://github.com/opsani/probe-http
+              image: opsani/probe-http
+              action: get_ok
+              label: "wait until health check OK, retrying with timeout"
+              arguments:
+                schema: http # default
+                port: 80     # default
+                path: "/"
+                timeout: 30
+
+# Define default values for variable, these can be overwritten in other env
+# files
+vars:
+  vote_ver: 1.0
+  worker_ver: 1.0
+  redis_ver: 3.2.2
+  db_ver: 9.4
+  result_ver: 1.0
+
+  vote_count: 0
+  worker_count: 0
+  db_count: 0
+  redis_count: 0
+  result_count: 0

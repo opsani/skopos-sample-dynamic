@@ -1,0 +1,10 @@
+vars:
+  # overwrite versions
+  vote_ver: "2.0"
+  result_ver: "2.0"
+
+  vote_count: 3
+  worker_count: 2
+  db_count: 1
+  redis_count: 1
+  result_count: 1

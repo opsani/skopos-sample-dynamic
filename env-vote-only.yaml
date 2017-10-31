@@ -1,0 +1,4 @@
+vars:
+  vote_count: 3
+  redis_count: 1
+
