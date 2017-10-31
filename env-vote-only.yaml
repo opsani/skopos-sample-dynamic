@@ -1,4 +1,6 @@
 vars:
   vote_count: 3
   redis_count: 1
+  
+  vote_ver: "2.0"
 
