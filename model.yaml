@@ -17,7 +17,6 @@ components:
     lifecycle: {}
   result:
     image: opsani/sample-result:${result_ver}
-    singleton: true
     replicas: ${result_count}
     provides:
       ports: ["80"]
